@@ -212,6 +212,56 @@ int main() {
     fig_free(y);
     fig_free(z);
   }
+
+  { /* radix conversion sample 10 -> 2. */
+    char buf[65] = {0}, *p;
+    sprintf(buf, "%llu", UINT_MAX + 1llu);
+    FIGURES bs[] = {
+      fig_alloc(2, "", 1),    // 0
+      fig_alloc(2, "\x1", 1), // 1
+      fig_add(bs[1], bs[1]),  // 2
+      fig_add(bs[2], bs[1]),  // 3
+      fig_add(bs[3], bs[1]),  // 4
+      fig_add(bs[4], bs[1]),  // 5
+      fig_add(bs[5], bs[1]),  // 6
+      fig_add(bs[6], bs[1]),  // 7
+      fig_add(bs[7], bs[1]),  // 8
+      fig_add(bs[8], bs[1]),  // 9
+      fig_add(bs[9], bs[1]),  // 10
+    };
+    FIGURES addend = fig_alloc(2, "", 1);
+    FIGURES base = fig_alloc(2, "\x1", 1);
+    for (p = buf + strlen(buf); p-- != buf; ) {
+      FIGURES augend = fig_mult(bs[*p - '0'], base);
+      FIGURES sum = fig_add(addend, augend);
+      fig_free(addend);
+      fig_free(augend);
+      addend = sum;
+      { /* base *= 10 */
+	FIGURES t = fig_mult(bs[10], base);
+	fig_free(base);
+	base = t;
+      }
+    }
+
+    p = buf;
+    p[0] = '\0';
+    for (i = fig_column(addend); i--; ) {
+      p += sprintf(p, "%d", fig_figure(addend, i));
+    }
+    if (fig_column(addend) == 0 ||
+	memcmp("10000000000000000000000000000000000000000000",
+	       buf, strlen(buf))) {
+      fprintf(stderr, "failed binary conversion: %s\n", buf);
+      return 1;
+    }
+
+    for (i = 0; i < sizeof(bs)/sizeof(bs[0]); ++i) {
+      fig_free(bs[i]);
+    }
+    fig_free(addend);
+    fig_free(base);
+  }
   return 0;
 }
 #endif
