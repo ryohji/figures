@@ -84,6 +84,27 @@ void fig_unshift(FIGURES fs, unsigned figure) {
   }
 }
 
+FIGURES fig_add(FIGURES a, FIGURES b) {
+  unsigned const R = a->r;
+  if (R != b->r) {
+    return NULL;
+  } else {
+    FIGURES fs = fig_alloc(R, 0, 0);
+    unsigned const N = a->n < b->n ? b->n : a->n;
+    unsigned i;
+    unsigned c = 0; /* carry */
+    for (i = 0; i < N; ++i) {
+      unsigned sum = c + fig_figure(a, i) + fig_figure(b, i);
+      lldiv_t d = lldiv(sum, R);
+      fig_push(fs, d.rem);
+      c = d.quot;
+    }
+    if (c) {
+      fig_push(fs, c);
+    }
+    return fs;
+  }
+}
 
 #if defined(UNIT_TEST)
 #include <stdio.h>
@@ -116,6 +137,23 @@ int main() {
       }
     }
     fig_free(a);
+  }
+  {
+    char const bin[] = {1,1,1,1};
+    FIGURES a = fig_alloc(2, bin, bin + 4);
+    FIGURES b = fig_alloc(2, bin, bin + 1);
+    FIGURES c = fig_add(a, b);
+    if (fig_column(c) != 5 ||
+	fig_figure(c, 4) != 1 ||
+	fig_figure(c, 3) != 0 ||
+	fig_figure(c, 2) != 0 ||
+	fig_figure(c, 1) != 0 ||
+	fig_figure(c, 0) != 0) {
+      return 1;
+    }
+    fig_free(a);
+    fig_free(b);
+    fig_free(c);
   }
   return 0;
 }

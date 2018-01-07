@@ -13,4 +13,13 @@ unsigned int fig_figure(FIGURES fs, unsigned int column);
 void fig_push(FIGURES fs, unsigned int figure);
 void fig_unshift(FIGURES fs, unsigned int figure);
 
+/**
+ * add a and b.
+ *
+ * @param a FIGURES
+ * @param b FIGURES, should be the same radix of a's
+ * @return newly allocated FIGURES. (should be freed by fig_free)
+ */
+FIGURES fig_add(FIGURES a, FIGURES b);
+
 #endif /* FIGURES_H_ */
