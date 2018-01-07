@@ -13,13 +13,14 @@ struct figures {
   unsigned int *b; /* buffer of figures */
 };
 
-FIGURES fig_alloc(unsigned radix, char const *figures, char const *end) {
+FIGURES fig_alloc(unsigned radix, char const *figures, unsigned count) {
   struct figures const fig = { radix, 0, 0 };
   FIGURES fs = malloc(sizeof(fig));
   memcpy(fs, &fig, sizeof(fig));
   if (figures) {
-    while (end-- != figures) {
-      fig_push(fs, *end);
+    char const *it = figures + count;
+    while (it-- != figures) {
+      fig_push(fs, *it);
     }
   }
   return fs;
@@ -89,7 +90,7 @@ FIGURES fig_add(FIGURES a, FIGURES b) {
   if (R != b->r) {
     return NULL;
   } else {
-    FIGURES fs = fig_alloc(R, 0, 0);
+    FIGURES fs = fig_alloc(R, NULL, 0);
     unsigned const N = a->n < b->n ? b->n : a->n;
     unsigned i;
     unsigned c = 0; /* carry */
@@ -113,7 +114,7 @@ int main() {
   unsigned i;
   const char buf[] = {9,8,7,6,5,4,3,2,1,0};
   {
-    FIGURES a = fig_alloc(10, buf, buf + 9);
+    FIGURES a = fig_alloc(10, buf, 9);
     fig_unshift(a, 0);
     if (fig_column(a) != 10) {
       return 1;
@@ -126,7 +127,7 @@ int main() {
     fig_free(a);
   }
   {
-    FIGURES a = fig_alloc(10, buf + 1, buf + 10);
+    FIGURES a = fig_alloc(10, buf + 1, 9);
     fig_push(a, 9);
     if (fig_column(a) != 10) {
       return 1;
@@ -140,8 +141,8 @@ int main() {
   }
   {
     char const bin[] = {1,1,1,1};
-    FIGURES a = fig_alloc(2, bin, bin + 4);
-    FIGURES b = fig_alloc(2, bin, bin + 1);
+    FIGURES a = fig_alloc(2, bin, 4);
+    FIGURES b = fig_alloc(2, bin, 1);
     FIGURES c = fig_add(a, b);
     if (fig_column(c) != 5 ||
 	fig_figure(c, 4) != 1 ||

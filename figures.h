@@ -4,7 +4,7 @@
 struct figures;
 typedef struct figures* FIGURES;
 
-FIGURES fig_alloc(unsigned int radix, char const *figures, char const *end);
+FIGURES fig_alloc(unsigned int radix, char const *figures, unsigned int count);
 void fig_free(FIGURES fs);
 
 unsigned int fig_column(FIGURES fs);
