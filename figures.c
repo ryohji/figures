@@ -156,6 +156,22 @@ int main() {
     fig_free(b);
     fig_free(c);
   }
+  {
+    char buf[10] = {0}, *p = buf;
+    FIGURES a = fig_alloc(10, "\x5\x4\x3\x2\x1", 5);
+    FIGURES b = fig_alloc(10, "\x5\x6\x7\x8\x9", 5);
+    FIGURES c = fig_add(a, b);
+    if (fig_column(c) != 6) {
+      return 1;
+    }
+    for (i = 6; i--; ) {
+      p += sprintf(p, "%d", fig_figure(c, i));
+    }
+    if (strcmp(buf, "111110")) {
+      fprintf(stderr, "54321 + 56789 expected 111110, but %s\n", buf);
+      return 1;
+    }
+  }
   return 0;
 }
 #endif
