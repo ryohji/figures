@@ -31,7 +31,7 @@ void fig_free(FIGURES fs) {
   free(fs);
 }
 
-unsigned fig_column(FIGURES fs) {
+unsigned fig_column(const FIGURES fs) {
   return fs->n;
 }
 
@@ -41,7 +41,7 @@ static inline unsigned upow(unsigned x, unsigned y) {
   return r;
 }
 
-unsigned fig_figure(FIGURES fs, unsigned column) {
+unsigned fig_figure(const FIGURES fs, unsigned column) {
   if (column < fs->n) {
     unsigned const R = fs->r;
     lldiv_t const d = lldiv(column, NR_FIGS(fs));
@@ -85,7 +85,7 @@ void fig_unshift(FIGURES fs, unsigned figure) {
   }
 }
 
-FIGURES fig_add(FIGURES a, FIGURES b) {
+FIGURES fig_add(const FIGURES a, const FIGURES b) {
   unsigned const R = a->r;
   if (R != b->r) {
     return NULL;

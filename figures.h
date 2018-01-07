@@ -7,8 +7,8 @@ typedef struct figures* FIGURES;
 FIGURES fig_alloc(unsigned int radix, char const *figures, unsigned int count);
 void fig_free(FIGURES fs);
 
-unsigned int fig_column(FIGURES fs);
-unsigned int fig_figure(FIGURES fs, unsigned int column);
+unsigned int fig_column(const FIGURES fs);
+unsigned int fig_figure(const FIGURES fs, unsigned int column);
 
 void fig_push(FIGURES fs, unsigned int figure);
 void fig_unshift(FIGURES fs, unsigned int figure);
@@ -20,6 +20,6 @@ void fig_unshift(FIGURES fs, unsigned int figure);
  * @param b FIGURES, should be the same radix of a's
  * @return newly allocated FIGURES. (should be freed by fig_free)
  */
-FIGURES fig_add(FIGURES a, FIGURES b);
+FIGURES fig_add(const FIGURES a, const FIGURES b);
 
 #endif /* FIGURES_H_ */
