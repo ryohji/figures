@@ -107,6 +107,27 @@ FIGURES fig_add(const FIGURES a, const FIGURES b) {
   }
 }
 
+FIGURES fig_mult(const FIGURES multiplier, const FIGURES multiplicand) {
+  unsigned const R = multiplier->r;
+  if (R != multiplicand->r) {
+    return NULL;
+  } else {
+    unsigned i;
+    FIGURES product = fig_alloc(R, NULL, 0);
+    FIGURES p = fig_add(multiplicand, product); /* copy */
+    for (i = 0; i < fig_column(multiplier); ++i) {
+      unsigned f = fig_figure(multiplier, i);
+      while (f--) {
+	FIGURES t = fig_add(p, product);
+	fig_free(product);
+	product = t;
+      }
+      fig_unshift(p, 0);
+    }
+    return product;
+  }
+}
+
 #if defined(UNIT_TEST)
 #include <stdio.h>
 
@@ -174,6 +195,22 @@ int main() {
     fig_free(a);
     fig_free(b);
     fig_free(c);
+  }
+  {
+    char buf[10] = {0}, *p = buf;
+    FIGURES x = fig_alloc(10, "\x1\x2\x3\x4\x5\x6\x7\x8", 8);
+    FIGURES y = fig_alloc(10, "\x9", 1);
+    FIGURES z = fig_mult(x, y);
+    for (i = fig_column(z); i--; ) {
+      p += sprintf(p, "%d", fig_figure(z, i));
+    }
+    if (strcmp(buf, "111111102")) {
+      fprintf(stderr, "expected 111,111,102 but %s", buf);
+      return 1;
+    }
+    fig_free(x);
+    fig_free(y);
+    fig_free(z);
   }
   return 0;
 }

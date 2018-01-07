@@ -22,4 +22,13 @@ void fig_unshift(FIGURES fs, unsigned int figure);
  */
 FIGURES fig_add(const FIGURES a, const FIGURES b);
 
+/**
+ * calculate the product of x and y.
+ *
+ * @param x FIGURES represents multiplier.
+ * @param y FIGURES represents multiplicand. (should have same radix of a's)
+ * @return newly allocated FIGURES. (should be free'ed by fig_free)
+ */
+FIGURES fig_mult(const FIGURES x, const FIGURES y);
+
 #endif /* FIGURES_H_ */
