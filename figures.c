@@ -171,6 +171,9 @@ int main() {
       fprintf(stderr, "54321 + 56789 expected 111110, but %s\n", buf);
       return 1;
     }
+    fig_free(a);
+    fig_free(b);
+    fig_free(c);
   }
   return 0;
 }
